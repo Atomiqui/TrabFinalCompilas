@@ -3,7 +3,7 @@ _Um Interpretador para Gramáticas Regulares_
 
 ### Especificação do trabalho:
 #### Tarefas impotantes para iniciar o trabalho:
-* Entender o que deve ser feito.
+* Entender o que deve ser feito. V
 * Entender o que são Gramáticas Lineares à Direita e como identificar.
 * Escolher a linguagem de programação (levar em consideração os geradores de parser).
 * Escolher ferramentas (geradores de parsers).
