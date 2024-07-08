@@ -1,11 +1,5 @@
-import os
+import func
 
-def leGramatica():
-    with open("gramatica.txt") as file:
-        return file.read()
-
-def main():
-    gramatica = leGramatica()
-    print(gramatica)
-
-main()
+file_path = 'GLD.txt'
+G = func.read_grammar(file_path)
+print(G)
