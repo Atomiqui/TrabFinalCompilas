@@ -1,5 +1,5 @@
 import func
 
-file_path = 'GLD.txt'
+file_path = 'GLD1.txt'
 G = func.read_grammar(file_path)
-print(G)
+func.validar_gld(G)

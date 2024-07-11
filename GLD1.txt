@@ -2,7 +2,7 @@ V = {S, A, B}
 T = {a, b}
 P = {
   S -> aA,
-  A -> bB,
+  A -> bB | cB,
   B -> a
 }
 S = S

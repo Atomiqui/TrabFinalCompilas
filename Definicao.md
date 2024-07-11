@@ -3,11 +3,15 @@ _Um Interpretador para Gramáticas Regulares_
 
 ### Especificação do trabalho:
 #### Tarefas impotantes para iniciar o trabalho:
-* Entender o que deve ser feito. V
+* Entender o que deve ser feito. **V**
 * Entender o que são Gramáticas Lineares à Direita e como identificar.
-* Escolher a linguagem de programação (levar em consideração os geradores de parser).
-* Escolher ferramentas (geradores de parsers).
-* Especificar a gramamática.
+    * Isso pode ser uma GLD:
+      ```
+      S -> B
+      B -> a
+      ```
+* Escolher a linguagem de programação (levar em consideração os geradores de parser). **Python ♥**
+* Qual analisador sintático vamos fazer?
 * Lembrar de construir o **README** conforme avançamos.
 
 #### Especificações do [PDF](https://classroom.google.com/u/0/c/NjU1ODgzOTMyMDMw/a/Njg0Njk4NTU3MDY5/details):
