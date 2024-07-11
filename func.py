@@ -43,39 +43,58 @@ def read_grammar(file_path):
 
     return {'V': v, 'T': t, 'P': p, 'S': s}
 
+def validate_GLD(G):
+    V = G['V']
+    T = G['T']
+    P = G['P']
+    S = G['S']
 
+    print(f"V: {V}")
+    print(f"T: {T}")
+    print(f"P: {P}")
+    print(f"S: {S}")
 
-def validar_gld(G):
-    v = G['V']
-    t = G['T']
-    p = G['P']
-    s = G['S']
+    if S not in V:
+        print(f"Símbolo inicial {S} não está no conjunto de variáveis.")
+        return False
+    
+    vInP = []
+    tInP = []
+    for v, t in P:
+        if v not in V:
+            print(f"Variável {v}, da produção {v} -> {t}, não está no conjunto de não terminais.")
+            return False
+        elif len(t) == 1 and t not in V and t not in T:
+            if t == '&':
+                continue
+            print(f"Terminal {t}, da produção {v} -> {t}, não está no conjunto de terminais.")
+            return False
+        elif len(t) == 2 and (t[0] not in T):
+            print(f"Terminal {t}, da produção {v} -> {t}, não está no conjunto de terminais.")
+            return False
+        elif len(t) == 2 and (t[1] not in V):
+            print(f"Variável {t}, da produção {v} -> {t}, não está no conjunto de não terminais.")
+            return False
+        elif len(t) > 2:
+            print(f"Produção {v} -> {t} é inválida.")
+            return False
 
-    print(f"V: {v}")
-    print(f"T: {t}")
-    print(f"P: {p}")
-    print(f"S: {s}")
+        if v not in vInP:
+            vInP.append(v)
 
-    '''
-    # Verificar se o símbolo inicial está no conjunto de variáveis
-    if s not in v:
-        print(f"Símbolo inicial {s} não está no conjunto de variáveis.")
+        if len(t) == 1 and t not in V:
+            if t not in tInP:
+                tInP.append(t)
+        elif len(t) == 2:
+            if t[0] not in tInP:
+                tInP.append(t[0])
+
+    if len(vInP) != len(V):
+        print(f"As produções não utilizam todas as variáveis.")
         return False
 
-    for variavel, producao in p:
-        # A parte esquerda da produção deve ser uma única variável
-        if variavel not in v:
-            print(f"Variável {variavel} não está no conjunto de variáveis.")
-            return False
-
-        # A parte direita da produção deve ser um terminal seguido de, no máximo, uma variável
-        if len(producao) == 1 and producao in t:
-            continue
-        elif len(producao) == 2 and producao[0] in t and producao[1] in v:
-            continue
-        else:
-            print(f"Produção {producao} é inválida.")
-            return False
+    if len(tInP) != len(T):
+        print(f"As produções não utilizam todos os terminais.")
+        return False
 
     return True
-    '''

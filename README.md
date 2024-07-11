@@ -9,13 +9,14 @@ Exemplos de definição onde:
 * **T**: Conjunto finito de símbolos **T**erminais.
 * **P**: Conjunto finito de regras de **P**rodução.
 * **S**: **S**ímbolo inicial.
+* **&**: Símbolo de vazio.
 
 ```
 V = {S, A, B}
-T = {a, b}
+T = {a, b, c}
 P = {
   S -> aA,
-  A -> bB,
+  A -> bB | cA | &,
   B -> a
 }
 S = S
