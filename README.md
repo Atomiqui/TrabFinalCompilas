@@ -1,7 +1,7 @@
 # Trabalho Final de Compiladores
 
 ### Grupo:
-**Alisson Costa Schmidt** e **Bianca Sabrina Bu(alguma coisa).**
+**Alisson Costa Schmidt** e **Bianca Sabrina Bublitz.**
 
 ## Como definir a gramática:
 Exemplos de definição onde:
@@ -10,6 +10,7 @@ Exemplos de definição onde:
 * **P**: Conjunto finito de regras de **P**rodução.
 * **S**: **S**ímbolo inicial.
 * **&**: Símbolo de vazio.
+* Utilizar variáveis terminais e não-terminais de apenas 1 dígito.
 
 ```
 V = {S, A, B}
