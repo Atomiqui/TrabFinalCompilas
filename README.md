@@ -7,7 +7,7 @@
   * Testar ambiguidade.
   * Fazer o README.txt.
   * Fazer novas GLDs (Válidas) para testar.
-  * Fazer a visualização gráfica do grafo.
+  * Fazer a visualização gráfica do grafo. (Alisson)
 
 ## Como definir a gramática:
 Exemplos de definição onde:
