@@ -3,6 +3,12 @@
 ### Grupo:
 **Alisson Costa Schmidt** e **Bianca Sabrina Bublitz.**
 
+## ToDo:
+  * Testar ambiguidade.
+  * Fazer o README.txt.
+  * Fazer novas GLDs (Válidas) para testar.
+  * Fazer a visualização gráfica do grafo.
+
 ## Como definir a gramática:
 Exemplos de definição onde:
 * **V**: Conjunto finito de **V**ariáveis (não-terminais).
