@@ -3,6 +3,7 @@ import threading
 import matplotlib.pyplot as plt
 
 def read_file(file_path):
+    file_path = 'GLDs/' + file_path
     try:
         with open(file_path, 'r') as file:
             return file.readlines()
