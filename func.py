@@ -138,11 +138,9 @@ def build_graph(G):
                 graph.add_edge(v, t[1], label=', '.join(label))
             else:
                 graph.add_edge(v, t[1], label=t[0])
-
     return graph
 
-def show_graph(graph, colors):
-    pos = nx.spring_layout(graph)
+def show_graph(graph, pos, colors, font_color='black'):
     nx.draw(
         graph,
         pos, 
@@ -154,11 +152,24 @@ def show_graph(graph, colors):
         font_size=16
     )
     edge_labels = nx.get_edge_attributes(graph, 'label')
-    nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels, font_color='black')
+    nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels, font_color=font_color)
+    plt.show()
+    return pos
 
-    show_graph_thread = threading.Thread(target=plt.show)
-    show_graph_thread.start()
-    return show_graph_thread, pos
+def update_graph_view(graph, pos, colors, font_color='black'):
+    nx.draw(
+        graph,
+        pos, 
+        with_labels=True,
+        node_size=2000,
+        node_color=colors,
+        edgecolors='black',
+        arrowstyle="<|-",
+        font_size=16
+    )
+    edge_labels = nx.get_edge_attributes(graph, 'label')
+    nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels, font_color=font_color)
+    plt.show()
 
 def validate_word(graph, word, G):
     current_node = G['S']
@@ -168,6 +179,12 @@ def validate_word(graph, word, G):
     previous_variable = current_node
     visitedNodes = []
     stack = list(word)
+
+    pos = nx.spring_layout(graph)
+    graph_nodes = graph.nodes()
+    index = list(graph_nodes).index(current_node)
+    colors = ['blue' if i == index else 'white' for i in range(len(graph_nodes))]
+    pos = show_graph(graph, pos, colors)
 
     print(f"Validando {word}:")
     while stack:
@@ -180,6 +197,9 @@ def validate_word(graph, word, G):
         for origin, destiny, data in graph.out_edges(current_node, data=True):
             if w not in T:
                 print(f"{current_node}--{w}-->?")
+                index = list(graph_nodes).index(current_node)
+                colors = ['red' if i == index else 'white' for i in range(len(graph_nodes))]
+                show_graph(graph, pos, colors, 'red')
                 return False
             elif w in data['label']:
                 if current_node == destiny:
@@ -190,8 +210,13 @@ def validate_word(graph, word, G):
                 stack.pop(0)
                 isAmbiguous = False
                 visitedNodes = []
+
                 print(f"{current_node}--{w}-->{destiny}")
                 current_node = destiny
+                index = list(graph_nodes).index(current_node)
+                colors = ['blue' if i == index else 'white' for i in range(len(graph_nodes))]
+                show_graph(graph, pos, colors)
+                
                 break
             elif data['label'] == '' and destiny not in visitedNodes:
                 isAmbiguous = True
@@ -200,15 +225,31 @@ def validate_word(graph, word, G):
                 
                 print(f"{current_node}----->{destiny}")
                 current_node = destiny
+                index = list(graph_nodes).index(current_node)
+                colors = ['blue' if i == index else 'white' for i in range(len(graph_nodes))]
+                show_graph(graph, pos, colors)
+                
                 break
         
         if previous_node == current_node and not isLoop and not isAmbiguous:
             print(f"{current_node}--{w}-->?")
+            index = list(graph_nodes).index(current_node)
+            colors = ['red' if i == index else 'white' for i in range(len(graph_nodes))]
+            show_graph(graph, pos, colors, 'red')
+
             return False
         elif previous_node == current_node and not isLoop and isAmbiguous:
             print(f"{current_node}----->{previous_variable}")
             current_node = previous_variable
+            index = list(graph_nodes).index(current_node)
+            colors = ['blue' if i == index else 'white' for i in range(len(graph_nodes))]
+            show_graph(graph, pos, colors, 'red')
+            
         elif previous_len_stack == len(stack) and not isAmbiguous:
             print(f"{current_node}--{w}-->?")
+            index = list(graph_nodes).index(current_node)
+            colors = ['red' if i == index else 'white' for i in range(len(graph_nodes))]
+            show_graph(graph, pos, colors, 'red')
+
             return False
     return current_node == '$'
