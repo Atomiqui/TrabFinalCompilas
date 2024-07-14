@@ -13,10 +13,11 @@ if func.validate_GLD(G):
     while True:
         word = input('Informe uma palavra para ser validada: ')
         if func.validate_word(graph, word, G):
-            print('Palavra válida')
+            print('Palavra pertence!')
         else:
-            print('Palavra inválida')
-            if input('Deseja continuar? (s/n) ') == 'n':
-                break
+            print('Palavra não pertence!')
+        
+        if input('Deseja continuar? (s/n) ') == 'n':
+            break
 else:
     print('Gramática inválida')
