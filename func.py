@@ -1,12 +1,26 @@
+import networkx as nx
+import threading
+import matplotlib.pyplot as plt
+
 def read_file(file_path):
-    with open(file_path, 'r') as file:
-        return file.readlines()
+    try:
+        with open(file_path, 'r') as file:
+            return file.readlines()
+    except FileNotFoundError:
+        print('Arquivo não encontrado. Tente novamente.')
+        return None
+    except Exception as e:
+        print(f'Erro: {e}')
+        return None
 
 def read_grammar(file_path):
     p = []
     reading_P = False
 
     lines = read_file(file_path)
+    if not lines:
+        return None
+    
     for line in lines:
         line = line.strip()
 
@@ -52,7 +66,7 @@ def validate_GLD(G):
     print(f"V: {V}")
     print(f"T: {T}")
     print(f"P: {P}")
-    print(f"S: {S}")
+    print(f"S: {S}\n")
 
     if S not in V:
         print(f"Símbolo inicial {S} não está no conjunto de variáveis.")
@@ -98,3 +112,103 @@ def validate_GLD(G):
         return False
 
     return True
+
+def build_graph(G):
+    V = G['V']
+    T = G['T']
+    P = G['P']
+    S = G['S']
+
+    graph = nx.DiGraph()
+        
+    for v, t in P:
+        if len(t) == 1 and t not in V:
+            if graph.has_edge(v, '$'):
+                label = graph[v]['$']['label']
+                label = [label, t]
+                graph.add_edge(v, '$', label=', '.join(label))
+            else:
+                graph.add_edge(v, '$', label=t)
+        elif len(t) == 1 and t in V:
+            graph.add_edge(v, t, label='')
+        elif len(t) == 2:
+            if graph.has_edge(v, t[1]):
+                label = graph[v][t[1]]['label']
+                label = [label, t[0]]
+                graph.add_edge(v, t[1], label=', '.join(label))
+            else:
+                graph.add_edge(v, t[1], label=t[0])
+
+    return graph
+
+def show_graph(graph, colors):
+    pos = nx.spring_layout(graph)
+    nx.draw(
+        graph,
+        pos, 
+        with_labels=True,
+        node_size=2000,
+        node_color=colors,
+        edgecolors='black',
+        arrowstyle="<|-",
+        font_size=16
+    )
+    edge_labels = nx.get_edge_attributes(graph, 'label')
+    nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels, font_color='black')
+
+    show_graph_thread = threading.Thread(target=plt.show)
+    show_graph_thread.start()
+    return show_graph_thread, pos
+
+def validate_word(graph, word, G):
+    current_node = G['S']
+    T = G['T']
+    isLoop = False
+    isAmbiguous = False
+    previous_variable = current_node
+    visitedNodes = []
+    stack = list(word)
+
+    print(f"Validando {word}:")
+    while stack:
+        w = stack[0]
+
+        previous_node = current_node
+        previous_len_stack = len(stack)
+
+        #print('\033[31m' + stack[0] + '\033[0m' + ''.join(stack[1:]))
+        for origin, destiny, data in graph.out_edges(current_node, data=True):
+            if w not in T:
+                print(f"{current_node}--{w}-->?")
+                return False
+            elif w in data['label']:
+                if current_node == destiny:
+                    isLoop = True
+                else:
+                    isLoop = False
+                
+                stack.pop(0)
+                isAmbiguous = False
+                visitedNodes = []
+                print(f"{current_node}--{w}-->{destiny}")
+                current_node = destiny
+                break
+            elif data['label'] == '' and destiny not in visitedNodes:
+                isAmbiguous = True
+                previous_variable = current_node
+                visitedNodes.append(destiny)
+                
+                print(f"{current_node}----->{destiny}")
+                current_node = destiny
+                break
+        
+        if previous_node == current_node and not isLoop and not isAmbiguous:
+            print(f"{current_node}--{w}-->?")
+            return False
+        elif previous_node == current_node and not isLoop and isAmbiguous:
+            print(f"{current_node}----->{previous_variable}")
+            current_node = previous_variable
+        elif previous_len_stack == len(stack) and not isAmbiguous:
+            print(f"{current_node}--{w}-->?")
+            return False
+    return current_node == '$'

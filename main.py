@@ -1,5 +1,22 @@
 import func
+import threading
 
-file_path = 'GLD2.txt'
-G = func.read_grammar(file_path)
-func.validate_GLD(G)
+while True:
+    #file_path = input('Informe o nome do arquivo: ')
+    G = func.read_grammar('GLD2.txt')
+    if G:
+        break
+
+if func.validate_GLD(G):
+    graph = func.build_graph(G)
+    #func.show_graph(graph)
+    while True:
+        word = input('Informe uma palavra para ser validada: ')
+        if func.validate_word(graph, word, G):
+            print('Palavra válida')
+        else:
+            print('Palavra inválida')
+            if input('Deseja continuar? (s/n) ') == 'n':
+                break
+else:
+    print('Gramática inválida')

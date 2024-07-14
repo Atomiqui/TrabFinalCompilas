@@ -1,5 +1,5 @@
 V = {S, A, B}
-T = {a, b}
+T = {a, b, c}
 P = {
   S -> aA,
   A -> bB | cB,
