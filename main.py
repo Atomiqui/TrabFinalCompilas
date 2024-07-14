@@ -3,7 +3,7 @@ import threading
 
 while True:
     #file_path = input('Informe o nome do arquivo: ')
-    G = func.read_grammar('GLD2.txt')
+    G = func.read_grammar('GLD4.txt')
     if G:
         break
 

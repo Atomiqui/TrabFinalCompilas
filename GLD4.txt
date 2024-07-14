@@ -1,8 +1,8 @@
 V = {S, A, B}
-T = {m, n}
+T = {m, n, g}
 P = {
   S -> mA,
-  A -> nB,
+  A -> nB | gA,
   B -> m
 }
 S = S
