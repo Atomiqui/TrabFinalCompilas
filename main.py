@@ -8,7 +8,7 @@ while True:
         break
 
 if func.validate_GLD(G):
-    graph = func.build_graph(G)
+    graph = func.build_reverse_graph(G)
     #func.show_graph(graph)
     while True:
         word = input('Informe uma palavra para ser validada: ')
@@ -16,7 +16,7 @@ if func.validate_GLD(G):
             print('Palavra vazia!')
             continue
         
-        if func.validate_word(graph, word, G):
+        if func.new_validate_word(graph, word, G, '$'):
             print('Palavra pertence!')
         else:
             print('Palavra não pertence!')

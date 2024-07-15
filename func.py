@@ -141,6 +141,40 @@ def build_graph(G):
                 graph.add_edge(v, t[1], label=t[0])
     return graph
 
+def build_reverse_graph(G):
+    V = G['V']
+    T = G['T']
+    P = G['P']
+    S = G['S']
+
+    graph = nx.DiGraph()
+        
+    for v, t in P:
+        if len(t) == 1 and t not in V:
+            if graph.has_edge('$', v):
+                label = graph['$'][v]['label']
+                label = [label, t]
+                graph.add_edge('$', v, label=', '.join(label))
+            else:
+                graph.add_edge('$', v, label=t)
+        elif len(t) == 1 and t in V:
+            graph.add_edge(t, v, label='')
+        elif len(t) == 2:
+            if graph.has_edge(t[1], v):
+                label = graph[t[1]][v]['label']
+                label = [label, t[0]]
+                graph.add_edge(t[1], v, label=', '.join(label))
+            else:
+                graph.add_edge(t[1], v, label=t[0])
+    return graph
+
+def show_graph(graph):
+    pos = nx.spring_layout(graph)
+    edge_labels = nx.get_edge_attributes(graph, 'label')
+    nx.draw(graph, pos, with_labels=True, node_size=2000, node_color='skyblue', font_size=10, font_weight='bold', font_color='black')
+    nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels, font_color='red', font_size=10)
+    plt.show()
+
 def validate_word(graph, word, G):
     current_node = G['S']
     T = G['T']
@@ -225,3 +259,34 @@ def validate_word(graph, word, G):
         return False
     
     return True
+
+def new_validate_word(graph, word, G, current_node):
+    S = G['S']
+    T = G['T']
+    stack = list(word)
+
+    print(''.join(stack[:-1]) + '\033[31m' + stack[-1] + '\033[0m') if stack else ...
+    while stack:
+        token = stack[-1]
+
+        out_edges = graph.out_edges(current_node, data=True)
+        labels = [data['label'] for origin, destiny, data in out_edges]
+        if token not in labels:
+            return False
+
+        for origin, destiny, data in out_edges:
+            if token in data['label']:
+                print(f"{origin}--{token}-->{destiny}")
+                newStack = stack[:-1]
+                if new_validate_word(graph, newStack, G, destiny):
+                    return True
+                else:
+                    print(f"{destiny}----->{origin}")
+                    print(''.join(stack[:-1]) + '\033[31m' + stack[-1] + '\033[0m') if stack else ...
+    if current_node != S:
+        prod = graph.get_edge_data(current_node, S)
+        if prod['label'] == '':
+            print(f"{current_node}----->{S}")
+            current_node = S
+    
+    return current_node == S
