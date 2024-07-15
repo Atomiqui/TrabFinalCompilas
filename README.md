@@ -7,7 +7,9 @@
   * Testar ambiguidade.
   * Fazer o README.txt.
   * Fazer novas GLDs (Válidas) para testar.
-  * Fazer a visualização gráfica do grafo. (Alisson)
+  * Corrigir se os tipos dos erros estão certos (se é erro sintático mesmo)
+  * Corrigir o português
+  * 
 
 ## Como definir a gramática:
 Exemplos de definição onde:
@@ -17,6 +19,8 @@ Exemplos de definição onde:
 * **S**: **S**ímbolo inicial.
 * **&**: Símbolo de vazio.
 * Utilizar variáveis terminais e não-terminais de apenas 1 dígito.
+* O símbolo de vazio **deve** ser colocado na palavra para ser utilizado.
+  * Ex: acc&
 
 ```
 V = {S, A, B}

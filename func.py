@@ -141,116 +141,87 @@ def build_graph(G):
                 graph.add_edge(v, t[1], label=t[0])
     return graph
 
-def show_graph(graph, pos, colors, font_color='black'):
-    nx.draw(
-        graph,
-        pos, 
-        with_labels=True,
-        node_size=2000,
-        node_color=colors,
-        edgecolors='black',
-        arrowstyle="<|-",
-        font_size=16
-    )
-    edge_labels = nx.get_edge_attributes(graph, 'label')
-    nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels, font_color=font_color)
-    plt.show()
-    return pos
-
-def update_graph_view(graph, pos, colors, font_color='black'):
-    nx.draw(
-        graph,
-        pos, 
-        with_labels=True,
-        node_size=2000,
-        node_color=colors,
-        edgecolors='black',
-        arrowstyle="<|-",
-        font_size=16
-    )
-    edge_labels = nx.get_edge_attributes(graph, 'label')
-    nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels, font_color=font_color)
-    plt.show()
-
 def validate_word(graph, word, G):
     current_node = G['S']
     T = G['T']
+    T.append('&')
     isLoop = False
     isAmbiguous = False
-    previous_variable = current_node
     visitedNodes = []
     stack = list(word)
+    previous_variable = []
+    previous_stack = []
 
-    pos = nx.spring_layout(graph)
-    graph_nodes = graph.nodes()
-    index = list(graph_nodes).index(current_node)
-    colors = ['blue' if i == index else 'white' for i in range(len(graph_nodes))]
-    pos = show_graph(graph, pos, colors)
+    i = 0
 
     print(f"Validando {word}:")
+    print('\033[31m' + stack[0] + '\033[0m' + ''.join(stack[1:])) if stack else ...
     while stack:
-        w = stack[0]
-
+        character = stack[0]
         previous_node = current_node
         previous_len_stack = len(stack)
 
-        #print('\033[31m' + stack[0] + '\033[0m' + ''.join(stack[1:]))
+        if i == 30:
+            return False
+        i += 1
+
         for origin, destiny, data in graph.out_edges(current_node, data=True):
-            if w not in T:
-                print(f"{current_node}--{w}-->?")
-                index = list(graph_nodes).index(current_node)
-                colors = ['red' if i == index else 'white' for i in range(len(graph_nodes))]
-                show_graph(graph, pos, colors, 'red')
+            print(f'Pv: {previous_variable}')
+            print(f'Vn: {visitedNodes}')
+            if character not in T:
+                print(f"{current_node}--{character}-->?")
+                print(f'SyntaxError: Carácter inválido \"{character}\", na posição {len(word) - len(stack)}.')
                 return False
-            elif w in data['label']:
+            elif character in data['label'] and (destiny not in visitedNodes or isLoop):
                 if current_node == destiny:
                     isLoop = True
                 else:
                     isLoop = False
+
+                previous_variable.append(current_node)
+                previous_stack.append(stack.copy())
+                visitedNodes.append(destiny)
                 
                 stack.pop(0)
-                isAmbiguous = False
-                visitedNodes = []
-
-                print(f"{current_node}--{w}-->{destiny}")
+                print(f"{current_node}--{character}-->{destiny}")
                 current_node = destiny
-                index = list(graph_nodes).index(current_node)
-                colors = ['blue' if i == index else 'white' for i in range(len(graph_nodes))]
-                show_graph(graph, pos, colors)
-                
+
+                print('\033[31m' + stack[0] + '\033[0m' + ''.join(stack[1:])) if stack else ...
                 break
             elif data['label'] == '' and destiny not in visitedNodes:
                 isAmbiguous = True
-                previous_variable = current_node
+                previous_stack.append(stack.copy())
+                previous_variable.append(current_node)
                 visitedNodes.append(destiny)
                 
                 print(f"{current_node}----->{destiny}")
                 current_node = destiny
-                index = list(graph_nodes).index(current_node)
-                colors = ['blue' if i == index else 'white' for i in range(len(graph_nodes))]
-                show_graph(graph, pos, colors)
-                
                 break
         
         if previous_node == current_node and not isLoop and not isAmbiguous:
-            print(f"{current_node}--{w}-->?")
-            index = list(graph_nodes).index(current_node)
-            colors = ['red' if i == index else 'white' for i in range(len(graph_nodes))]
-            show_graph(graph, pos, colors, 'red')
-
+            print(f"{current_node}--{character}-->?")
+            print('o que causa esse erro?')
             return False
         elif previous_node == current_node and not isLoop and isAmbiguous:
-            print(f"{current_node}----->{previous_variable}")
-            current_node = previous_variable
-            index = list(graph_nodes).index(current_node)
-            colors = ['blue' if i == index else 'white' for i in range(len(graph_nodes))]
-            show_graph(graph, pos, colors, 'red')
-            
+            if len(previous_variable) > 0 and graph.has_edge(previous_variable[-1], current_node):
+                print(f"{current_node}----->{previous_variable[-1]} aqui")
+                stack = previous_stack[-1].copy()
+                previous_stack.pop()
+                print('\033[31m' + stack[0] + '\033[0m' + ''.join(stack[1:]))
+                current_node = previous_variable[-1]
+                previous_variable.pop()
+            elif len(visitedNodes) > 0:
+                visitedNodes.pop()
         elif previous_len_stack == len(stack) and not isAmbiguous:
-            print(f"{current_node}--{w}-->?")
-            index = list(graph_nodes).index(current_node)
-            colors = ['red' if i == index else 'white' for i in range(len(graph_nodes))]
-            show_graph(graph, pos, colors, 'red')
-
+            print(f"{current_node}--{character}-->?")
+            print(f'SyntaxError: Carácter inesperado \"{character}\", na posição {len(word) - len(stack)}.')
             return False
-    return current_node == '$'
+            
+    if current_node != '$':
+        expected_characters = [data['label'] for origin, destiny, data in graph.out_edges(current_node, data=True)]
+        expected_characters.remove(word[-1]) if word[-1] in expected_characters else ...
+        expected_characters = ', '.join(expected_characters)
+        print(f'SyntaxError: Carácter(es) esperado(s): {expected_characters}, na posição {len(word) - len(stack)}.')
+        return False
+    
+    return True
