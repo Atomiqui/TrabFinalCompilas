@@ -29,9 +29,9 @@ def read_grammar(file_path):
             continue
 
         if line.startswith('V'):
-            v = line.split('=')[1].strip()[1:-1].split(', ')
+            v = line.split('=')[1].strip()[1:-1].split(' ')
         elif line.startswith('T'):
-            t = line.split('=')[1].strip()[1:-1].split(', ')
+            t = line.split('=')[1].strip()[1:-1].split(' ')
         elif line.startswith('P'):
             reading_P = True
             continue
@@ -39,18 +39,12 @@ def read_grammar(file_path):
             if line == '}':
                 reading_P = False
                 continue
-            if '->' in line and '|' not in line:
-                parte_esquerda, parte_direita = line.split('->')
-                parte_direita = parte_direita.strip().rstrip(',')
-                p.append((parte_esquerda.strip(), parte_direita))
-            elif '->' in line and '|' in line:
-                parte_esquerda, parte_direita = line.split('->')
-                parte_direita = parte_direita.strip().split('|')
-                for producao in parte_direita:
-                    if ',' in producao:
-                        producao = producao.split(',')
-                        producao = ''.join(producao)
-                    p.append((parte_esquerda.strip(), producao.strip()))
+            if '->' in line:
+                left_part, right_part = line.split('->')
+                if '|' in line:
+                    right_part = right_part.strip().split('|')
+                for production in right_part:
+                    p.append((left_part.strip(), production.strip()))
             else:
                 raise ValueError(f"Formato de produção inválido: {line}")
         elif line.startswith('S'):
@@ -175,114 +169,66 @@ def show_graph(graph):
     nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels, font_color='red', font_size=10)
     plt.show()
 
-def validate_word(graph, word, G):
-    current_node = G['S']
-    T = G['T']
-    T.append('&')
-    isLoop = False
-    isAmbiguous = False
-    visitedNodes = []
-    stack = list(word)
-    previous_variable = []
-    previous_stack = []
-
-    i = 0
-
-    print(f"Validando {word}:")
-    print('\033[31m' + stack[0] + '\033[0m' + ''.join(stack[1:])) if stack else ...
-    while stack:
-        character = stack[0]
-        previous_node = current_node
-        previous_len_stack = len(stack)
-
-        if i == 30:
-            return False
-        i += 1
-
-        for origin, destiny, data in graph.out_edges(current_node, data=True):
-            print(f'Pv: {previous_variable}')
-            print(f'Vn: {visitedNodes}')
-            if character not in T:
-                print(f"{current_node}--{character}-->?")
-                print(f'SyntaxError: Carácter inválido \"{character}\", na posição {len(word) - len(stack)}.')
-                return False
-            elif character in data['label'] and (destiny not in visitedNodes or isLoop):
-                if current_node == destiny:
-                    isLoop = True
-                else:
-                    isLoop = False
-
-                previous_variable.append(current_node)
-                previous_stack.append(stack.copy())
-                visitedNodes.append(destiny)
-                
-                stack.pop(0)
-                print(f"{current_node}--{character}-->{destiny}")
-                current_node = destiny
-
-                print('\033[31m' + stack[0] + '\033[0m' + ''.join(stack[1:])) if stack else ...
-                break
-            elif data['label'] == '' and destiny not in visitedNodes:
-                isAmbiguous = True
-                previous_stack.append(stack.copy())
-                previous_variable.append(current_node)
-                visitedNodes.append(destiny)
-                
-                print(f"{current_node}----->{destiny}")
-                current_node = destiny
-                break
-        
-        if previous_node == current_node and not isLoop and not isAmbiguous:
-            print(f"{current_node}--{character}-->?")
-            print('o que causa esse erro?')
-            return False
-        elif previous_node == current_node and not isLoop and isAmbiguous:
-            if len(previous_variable) > 0 and graph.has_edge(previous_variable[-1], current_node):
-                print(f"{current_node}----->{previous_variable[-1]} aqui")
-                stack = previous_stack[-1].copy()
-                previous_stack.pop()
-                print('\033[31m' + stack[0] + '\033[0m' + ''.join(stack[1:]))
-                current_node = previous_variable[-1]
-                previous_variable.pop()
-            elif len(visitedNodes) > 0:
-                visitedNodes.pop()
-        elif previous_len_stack == len(stack) and not isAmbiguous:
-            print(f"{current_node}--{character}-->?")
-            print(f'SyntaxError: Carácter inesperado \"{character}\", na posição {len(word) - len(stack)}.')
-            return False
-            
-    if current_node != '$':
-        expected_characters = [data['label'] for origin, destiny, data in graph.out_edges(current_node, data=True)]
-        expected_characters.remove(word[-1]) if word[-1] in expected_characters else ...
-        expected_characters = ', '.join(expected_characters)
-        print(f'SyntaxError: Carácter(es) esperado(s): {expected_characters}, na posição {len(word) - len(stack)}.')
-        return False
-    
-    return True
-
-def new_validate_word(graph, word, G, current_node):
-    S = G['S']
-    T = G['T']
+def validate_word(graph, word, current_node, F):
     stack = list(word)
 
     print(''.join(stack[:-1]) + '\033[31m' + stack[-1] + '\033[0m') if stack else ...
     while stack:
         token = stack[-1]
-
         out_edges = graph.out_edges(current_node, data=True)
-        labels = [data['label'] for origin, destiny, data in out_edges]
-        if token not in labels:
+        expected_tokens = [data['label'] for origin, destiny, data in out_edges]
+        if token not in expected_tokens:
             return False
 
         for origin, destiny, data in out_edges:
             if token in data['label']:
                 print(f"{origin}--{token}-->{destiny}")
                 newStack = stack[:-1]
-                if new_validate_word(graph, newStack, G, destiny):
+                if reverse_validate_word(graph, newStack, S, destiny):
                     return True
                 else:
                     print(f"{destiny}----->{origin}")
                     print(''.join(stack[:-1]) + '\033[31m' + stack[-1] + '\033[0m') if stack else ...
+
+    if current_node != F:
+        prod = graph.get_edge_data(current_node, F)
+        if prod['label'] == '': # &?
+            print(f"{current_node}----->{F}")
+            current_node = S
+    
+    return current_node == S
+    
+
+def reverse_validate_word(graph, word, S, current_node):
+    stack = list(word)
+
+    print(''.join(stack[:-1]) + '\033[31m' + stack[-1] + '\033[0m') if stack else ...
+    while stack:
+        token = stack[-1]
+        expected_tokens = []
+        visited_nodes = []
+        out_edges = graph.out_edges(current_node, data=True)
+        for origin, destiny, data in out_edges:
+            if token in data['label']:
+                expected_tokens.append(data['label'])
+
+        if token not in expected_tokens:
+            return False
+
+        for origin, destiny, data in out_edges:
+            if token in data['label']:
+                print(f"{origin}--{token}-->{destiny}")
+                newStack = stack[:-1]
+                visited_nodes.append(destiny)
+                if reverse_validate_word(graph, newStack, S, destiny):
+                    return True
+                elif len(visited_nodes) == len(expected_tokens):
+                    print(f"{destiny}----->{origin}")
+                    return False
+                else:
+                    print(f"{destiny}----->{origin}")
+                    print(''.join(stack[:-1]) + '\033[31m' + stack[-1] + '\033[0m') if stack else ...
+
     if current_node != S:
         prod = graph.get_edge_data(current_node, S)
         if prod['label'] == '':
