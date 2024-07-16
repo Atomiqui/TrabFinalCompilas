@@ -1,7 +1,6 @@
 # Trabalho Final de Compiladores
 
-#### Grupo:
-**Alisson Costa Schmidt** e **Bianca Sabrina Bublitz.**
+#### Grupo: Alisson Costa Schmidt e Bianca Sabrina Bublitz.
 
 ### Interpretador de Gramáticas Regulares Lineares à Direita
 O projeto desenvolvido representa um interpretador para Gramáticas Regulares Lineares à Direita. O interpretador é capaz de ler uma gramática a partir de um arquivo, validar palavras fornecidas pelo usuário de acordo com a gramática, e informar se a palavra é válida ou não.
