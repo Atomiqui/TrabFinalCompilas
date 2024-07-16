@@ -1,6 +1,6 @@
 # Trabalho Final de Compiladores
 
-## Grupo:
+#### Grupo:
 **Alisson Costa Schmidt** e **Bianca Sabrina Bublitz.**
 
 ### Interpretador de Gramáticas Regulares Lineares à Direita
