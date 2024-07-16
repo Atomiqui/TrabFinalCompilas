@@ -16,7 +16,7 @@ if func.validate_GLD(G):
             print('Palavra vazia!')
             continue
         
-        if func.new_validate_word(graph, word, G, '$'):
+        if func.reverse_validate_word(graph, word, G['S'], '$'):
             print('Palavra pertence!')
         else:
             print('Palavra não pertence!')
