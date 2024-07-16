@@ -1,6 +1,6 @@
 # Trabalho Final de Compiladores
 
-# Grupo:
+## Grupo:
 **Alisson Costa Schmidt** e **Bianca Sabrina Bublitz.**
 
 ### Interpretador de Gramáticas Regulares Lineares à Direita
@@ -32,7 +32,7 @@ _OBS:_ ' ' indicando que é necessário o espaço após os terminais/não termin
   ```
   python main.py
   ```
-  
+
   3. Digite a palavra a ser validada quando solicitado:
   ```
   Enter a word to validate: '101'
