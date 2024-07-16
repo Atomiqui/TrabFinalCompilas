@@ -14,12 +14,14 @@ if func.validate_GLD(G):
         if len(word) == 0:
             print('Palavra vazia!')
             continue
-        if func.validate_word(graph, word, list(word), G['S'], '$'):
-            print('Palavra pertence!')
+        isValid, index_error = func.validate_word(graph, word, list(word), G['S'], '$')
+        if isValid:
+            print('\nPalavra pertence!')
         else:
-            print('Palavra não pertence!')
-        
-        if input('Deseja testar outra palavra? (s/n) ') == 'n':
+            print('\nPalavra não pertence!')
+            print(index_error)
+            print(f'Erro: token inesperado \'{word[index_error]}\' na posição {index_error+1}.')
+        if input('\nDeseja testar outra palavra? (s/n) ') == 'n':
             break
 else:
     print('Gramática inválida')
