@@ -10,7 +10,7 @@ O projeto desenvolvido representa um interpretador para Gramáticas Regulares Li
   * func.py: contém funções auxiliares para análise e validação da gramática.
   * main.py: script principal que executa o interpretador.
 
-## Defiição formal da gramática:
+## Definição formal da gramática:
 ```
 G -> V = {(Non-terminal' ')+}\nT = {(Terminals' ')+}\nP = {\n(Productions\n)+}\nS = Non-terminal
 Non-terminal -> A-Z | 1-9
@@ -34,9 +34,9 @@ _OBS:_ ' ' indicando que é necessário o espaço após os terminais/não termin
 
   3. Digite a palavra a ser validada quando solicitado:
   ```
-  Enter a word to validate: '101'
+  Enter a word to validate: 101
   ```
 
 ## Erros Comuns:
-  * Símbolos Inválidos: Certifique-se de que a palavra contenha apenas símbolos terminais definidos na gramática.
-  * Formatação da Gramática: Verifique se a gramática está corretamente formatada no arquivo GLD2.txt.
+  * Formatação da Gramática: verifique se a gramática está corretamente formatada no arquivo GLD.txt.
+  * Símbolos Inválidos: certifique-se de que a palavra contenha apenas símbolos terminais definidos na gramática.
