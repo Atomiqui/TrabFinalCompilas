@@ -1,8 +1,8 @@
-V = {S, X, Y}
-T = {x, y}
+V = {S X Y}
+T = {x y}
 P = {
-  S -> xX,
-  X -> yY,
-  Y -> x
+S -> xX
+X -> yY
+Y -> x
 }
 S = S
