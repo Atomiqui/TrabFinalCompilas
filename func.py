@@ -1,5 +1,6 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+import re
 
 def read_file(file_path):
     try:
@@ -27,11 +28,15 @@ def read_grammar(file_path):
             continue
 
         if line.startswith('V'):
-            v = line.split('=')[1].strip()[1:-1].split(' ')
-            v.remove('')
+            v = re.findall(r'\w+', line.split('=')[1].strip()[1:-1])
+            if not v:
+                print(" O conjunto V está vazio ou mal formatado.")
+                return None
         elif line.startswith('T'):
-            t = line.split('=')[1].strip()[1:-1].split(' ')
-            t.remove('')
+            t = re.findall(r'\w+', line.split('=')[1].strip()[1:-1])
+            if not t:
+                print("O conjunto T está vazio ou mal formatado.")
+                return None
         elif line.startswith('P'):
             reading_P = True
             continue
