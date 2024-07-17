@@ -8,9 +8,11 @@ while True:
 
 if func.validate_GLD(G):
     graph = func.build_graph(G)
-    func.show_graph(graph)
+    print("Digite 'sair' para encerrar o programa.")
     while True:
         word = input('Informe uma palavra para ser validada: ')
+        if word.lower() == 'sair':
+            break
         if len(word) == 0:
             print('Palavra vazia!')
             continue
@@ -19,9 +21,6 @@ if func.validate_GLD(G):
             print('\nPalavra pertence!')
         else:
             print('\nPalavra não pertence!')
-            print(index_error)
             print(f'Erro: token inesperado \'{word[index_error]}\' na posição {index_error+1}.')
-        if input('\nDeseja testar outra palavra? (s/n) ') == 'n':
-            break
 else:
     print('Gramática inválida')
