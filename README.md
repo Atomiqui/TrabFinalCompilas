@@ -59,7 +59,7 @@ S -> aA
 A -> b | &
 ```
 Gera um grafo assim:
-![Grafo_Exemplo](src\img_grafo.png)
+![Grafo_Exemplo](https://github.com/Atomiqui/TrabFinalCompilas/blob/main/src/img_grafo.png)
 
 Com o grafo montado, a função de validação ```validate_word(graph, word, stack, current_node, F)``` utiliza as arestas e os seus rótulos para fazer o deslocamento. Durante a execução da validação, caso a o token que está sendo testado no momento não ache uma aresta em que ele esteja em um dos rótulos, isso indica que há um erro na palavra, ou o caminho escolhido (em caso de ambiguidade) não é o certo, mas, caso ao final da palavra o nó atual seja o $ isso indica que a palavra foi validada.
 
