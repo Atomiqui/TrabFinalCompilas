@@ -1,5 +1,4 @@
 import func
-import threading
 
 while True:
     file_path = input('Informe o nome do arquivo: ')
