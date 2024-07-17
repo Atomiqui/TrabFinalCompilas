@@ -8,6 +8,7 @@ while True:
 
 if func.validate_GLD(G):
     graph = func.build_graph(G)
+    func.show_graph(graph)
     while True:
         word = input('Informe uma palavra para ser validada: ')
         if len(word) == 0:
