@@ -1,8 +1,0 @@
-V = {S X Y }
-T = {a b }
-P = {
-S -> aX 
-X -> aX | bY 
-Y -> b 
-}
-S = S 

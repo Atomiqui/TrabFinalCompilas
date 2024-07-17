@@ -2,7 +2,6 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 def read_file(file_path):
-    file_path = 'GLDs/' + file_path
     try:
         with open(file_path, 'r') as file:
             return file.readlines()
@@ -184,7 +183,7 @@ def validate_word(graph, word, stack, current_node, F):
             if prod['label'] == '&':
                 print(f"{current_node}--&-->{F}")
                 current_node = F
-                
+
     return current_node == F, max(index_errors)
 
 def show_graph(graph):

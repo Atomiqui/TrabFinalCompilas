@@ -1,8 +1,0 @@
-V = {S, A, B}
-T = {m, n, g}
-P = {
-  S -> mA,
-  A -> nB | gA,
-  B -> m
-}
-S = S
